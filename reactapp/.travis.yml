@@ -1,0 +1,25 @@
+sudo: required
+language: generic
+
+services:
+  - docker
+
+before_install:
+  - docker build -t mohiit/devops -f Dockerfile.dev .
+
+script:
+  - docker run -e CI=true mohiit/devops npm run test
+
+
+deploy:
+  provider: elasticbeanstalk
+  region: "ap-south-1"
+  app: "devops"
+  env: "Devops-env"
+  bucket_name: "elasticbeanstalk-ap-south-1-478931652980"
+  bucket_path: "devops"
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_accerss_key: "$AWS_SECRET_KEY"
+  
