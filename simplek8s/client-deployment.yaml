@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: web
+  template:
+    metadata:
+      labels:
+        component: web
+    spec:
+      containers:
+        - name: client
+          image: mohiit/dotut-mc-client:v4
+          ports:
+          - containerPort: 3000 # The port exposed in the Dockerfile of image of the pod (nginx listens on it)
+          imagePullPolicy: Always
+
