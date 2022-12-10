@@ -1,0 +1,35 @@
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-node-port
+spec:
+  type: NodePort # accessible to browsers
+  ports: # decleration needed for NodePort type
+    - port: 3050 # for other pods to connect to the corresponding pod
+      targetPort: 3000 # the port to expose in the corresponding pod (should be same as containerPort in deployment)
+      nodePort: 31515 # the port to access using the browser
+  
+  # type: ClusterIP # not accsible to browser
+  # ports: # no nodePort needed 
+  #   - port: 5000
+  #     targetPort: 5000
+
+  selector:
+    component: web
+
+
+# ClusterIp exposure < NodePort exposure < LoadBalancer exposure
+# Services are long lived , have a fixed port and ip
+# Services use selector to identify corresponding pods 
+# LoadBalancers service isn’t there on local cluster 
+# Types:
+  # ClusterIPs are accessible only to internal objects and not outside the cluster at <some internal ip>:<port> 
+    - port: # for other pods to connect to the corresponding pod
+    - targetPort:
+  # NodePorts are exposed at <node ip>:<nodePort> 
+    - port: # for other pods to connect to the corresponding pod
+    - targetPort: # the port to map the incoming port (above) to in the corresponding pod (should be same as containerPort in deployment)so if redis is running on 6379, port=8080, targetPort=6379 will make redis accessible on 8080 by other pods 
+    - nodePort: # the port to access using the browser
+        

@@ -1,0 +1,63 @@
+# A kubernetes volume will survive container restarts but not a pod restart as it belongs within the pod - so we don’t use K8s volume but a Persistent Volume (which is outside the pod)
+
+# Persistent Volume - How to provision the PersistentVolume
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: local-storage
+spec:
+  storageClassName: mylocalstorage
+  capacity:
+    storage: 20Gi # Size of space on the hard disk to be reserved by this cluster - creates a resource on a specific cloud
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/some new/directory/structure/" # path on the host machine where data will be mounted
+    type: DirectoryOrCreate
+
+---
+
+
+# Persistent Volume Claim - Create a piece of Persistent Volume with specific requirements
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongo-pvc
+spec:
+  storageClassName: mylocalstorage # used to "bind" a specific PersistentVolume to this PVC
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi # portion required from the space reserved by the PersistentVolume ; always lower 
+
+
+# - Does not reference the PV from which the space will be allocated by default - requires storageClassName
+# - Binding happens after meeting 3 criterias - size, accessModes & storageClassName
+---
+
+
+# Deployment Config - Where do we want to use that piece ? 
+# - Mention volume and container volume inside deployment spec	
+
+spec:   
+  volumes:
+    - name: # arbitrary vol name
+      hostPath: # path on the host machine where volume will be mounted
+      # While the above works, it has to be updated everywhere in case of moving to a different cloud provider
+      # So instead use a Pointer to another config (Claim) about the specifics which is easier to update in case of changes 
+    - name: # arbitrary name
+      persistentVolumeClaim: # says this pod should request for a volume from k8s as specified in the claim  
+      claimName: # name of the pvc required
+
+# Mention the volume mounts for each container in the deployment
+
+spec:    
+  containers:        
+    volumeMounts:          
+      - name: # name of the specific pod volume to be mounted             
+        mountPath: # location on the container to be mounted (defaults to /data/db for mongo and /var/lib/postgresql/data for postgres)
+
+

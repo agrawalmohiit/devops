@@ -1,0 +1,31 @@
+
+
+
+- Namespacing and Congrolgroups  features belong to a linux system - not win not macos
+- Docker desktop creates a linux virtual machine on the computer 
+- Docker on Mac uses a native MacOS virtualization system called Hyperkit
+- Minikube for Mac supports multiple hypervisors such as VirtualBox, VMWare, and Hyperkit
+- When using Docker Desktop's Kubernetes instead of Minikube - the cluster is available at localhost instead of Minikube ip
+- Pods are short lived
+- Pods are not accessible outside k8s cluster - require a service / clusterip to be exposed
+- Run a command inside pod - k exec -it <pod name> <command> (-it is for input )
+- Open container shell : k exec -it <pod name> -- sh
+- Deployments manage multiple pods and spin new pods if one dies
+- ReplicaSets are used to tell K8s how many pods are to be run at any time 
+- 
+
+
+
+
+---
+
+###
+
+- SECRET is also an object like a pod
+- Kubectl create : Imperative way of creating an object (without a config file)
+- LoadBalancer service is not used because it can give access to only one set of pods and not multiple deployments, Ingress can do that
+- ingresses are native objects inside the cluster that can route to multiple services, while load balancers are external to the cluster and only route to a single service
+- 
+
+
+

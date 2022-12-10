@@ -1,0 +1,3 @@
+Why is a container name inside a deployment given without writing metadata and with a -  (isn’t - used for a list ? ) 
+Why do we use selector.matchLabels in Depolyment but only selector in services ? 
+

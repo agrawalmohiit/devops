@@ -1,0 +1,41 @@
+
+# Storage Class : Dynamically provisioned Persistent Volume on AWS (becomes PV when applied)
+# Volume on AWS can be utilised by changing the hostPath:path config too but it requires manual creation and management of volumes
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: aws-ebs-ssd
+## spec:
+##   storageClassName: ssd-slow
+##   capacity:
+##     storage: 20Gi # Size of space on the hard disk to be reserved by this cluster - creates a resource on a specific cloud
+##   accessModes:
+##     - ReadWriteOnce
+##   hostPath:
+##     path: "/mnt/some new/directory/structure/" # path on the host machine where data will be mounted
+##     type: DirectoryOrCreate
+provisioner: kubernetes.io/aws-ebs
+parameters:
+  type: gp2 # io1, gp2, sc1, st1 : https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSVolumeTypes.html
+
+
+---
+
+
+# Persistent Volume Claim - Create a piece of Persistent Volume with specific requirements
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongo-pvc
+spec:
+##storageClassName: mylocalstorage # used to "bind" a specific PersistentVolume to this PVC
+  storageClassName: aws-ebs-ssd # same as metadata.name of StorageClass
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 7Gi
+##    storage: 20Gi # portion required from the space reserved by the PersistentVolume ; always lower 
+
