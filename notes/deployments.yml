@@ -18,4 +18,11 @@ spec:
           ports:
           - containerPort: 3000 # The port exposed in the Dockerfile of image of the pod (nginx listens on it)
           imagePullPolicy: Always
+          resources:
+            requests:
+              memory: # 100Mi  : 1 Mi = 1024Ki = 1024*1024 bytes ; 1M = 1000K = 1000*1000 bytes
+              cpu: 100m # milli cpu ; 1000m = 1 cpu
+            limits: 
+              memory: 500Mi # if the memory used at run time by the containers exceeds, the container will be killed and restarded but the pod remains unaffected ; in practive it should be kept a little higher than requested 
+              cpu : # if the usage exceeds, the CPU will be clamped (not allwed to go over), the container will continue to run ; in practice it should be same as requested
 
