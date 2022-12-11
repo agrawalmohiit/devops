@@ -104,5 +104,5 @@ spec:
           # value: production-microservice
           valueFrom:
             configMapRef:
-              name: global-config
+              name: global-config-v2
               key: SPRING_PROFILES_ACTIVE
