@@ -1,0 +1,34 @@
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: 
+# spec:
+#   template:
+#     spec:
+#       containers:
+#         - name: 
+#           image: 
+#           resources:
+            requests:
+              memory: # If the pod uses more memory than than requested, the cluster will allocate it IF its avaialble in the node 
+              cpu: # If the pods uses more CPU than requested, the CPU will be clamped (not allwed to go over), the container will continue to run ; in practice it should be same as requested
+
+            limits: 
+              memory: # If the pod uses more memory than than the limit, the container will be killed and restarded but the pod remains unaffected ; in practive it should be kept a little higher than requested
+              cpu :  
+
+  
+
+# 100Mi  : 1 Mi = 1024Ki = 1024*1024 bytes ; 1M = 1000K = 1000*1000 bytes
+
+## QoS
+Guaranteed : # requests and limits both are configured
+Burstable : # only requests configured
+BestEffort: # nothing configured
+
+## Priority
+ # When new pods are scheduled - only pod priority is considered
+ # In case of of out-of-resources Eviction - both priority and QoS is considered
+
+## Eviction : 
+  # When the node is pressurised - it evicts a pod in the order BestEffort > Burstable > Guaranteed

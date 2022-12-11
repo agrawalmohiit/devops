@@ -1,0 +1,75 @@
+### Horizontal Pod Autoscaling
+
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: api-gateway
+  namespace: default
+spec:
+  maxReplicas: 4
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: api-gateway
+  targetCPUUtilizationPercentage: 200
+status: # this part is to be calculated on the fly 
+  currentReplicas: 1
+  desiredReplicas: 0
+
+
+### Memory server 
+
+  # docker plugins : https://docs.docker.com/engine/reference/commandline/plugin/
+  # enabling memory server in docker desktop: 
+    kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/download/metrics-server-helm-chart-3.8.3/components.yaml
+
+  # commands : 
+    k top pods
+    k top node 
+
+  # dashboard : 
+    # for minikube
+    minikube adddons enable dashboard 
+    minikube dashboard
+    # for Docker Desktop
+    kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.6.1/aio/deploy/recommended.yaml
+    kubectl proxy
+    http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
+
+
+  # If the pod uses more memory than than requested, the cluster will allocate it IF its avaialble in the node 
+  # If the pods uses more CPU than rewuestged, the cpu will be clmped and pod will get slow
+
+### Autoscaling - HPA
+  # command Line :
+    kubectl autoscale deployment <deployment name> --cpu-percent 200 --min 1 -- 4
+    # The above say if the deployment uses more than 200% of the requested cores, inc the no. of pod upto a max 4
+  # convert to yaml : 
+    kubectl describe hpa <deployment name> -o yaml
+
+### Readiness Probes
+  # when autoscaling happens, kubernetes assumes the new pod are ready once created and starts routing requests to it
+  # this leads to a temporary 502 for requests routed to new pods as some applications take time to be ready to respond
+  # if a readinessProbe is defined, kubernetes sends an internal requests to the configured path:port and waits for a 200 before routing requests to them
+
+  # apiVersion: apps/v1
+  # kind: Deployment
+  # metadata:
+  #   name: 
+  # spec:
+  #   template:
+  #     spec:
+  #       containers:
+  #         name:
+  #         image:
+            readinessProb:
+              httpGet:
+                path: /
+                port: 
+  
+
+### Liveness Probes
+  # Runs continually for the lifetime of the pod - http / exec / tcp
+  # kills the pod if it fails
+  # https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/

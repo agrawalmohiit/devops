@@ -41,10 +41,13 @@ spec:
 
 # Deployment Config - Where do we want to use that piece ? 
 # - Mention volume and container volume inside deployment spec	
-
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: some-pod
 spec:   
   volumes:
-    - name: # arbitrary vol name
+    - name: xyzvol # arbitrary vol name
       hostPath: # path on the host machine where volume will be mounted
       # While the above works, it has to be updated everywhere in case of moving to a different cloud provider
       # So instead use a Pointer to another config (Claim) about the specifics which is easier to update in case of changes 
@@ -53,11 +56,14 @@ spec:
       claimName: # name of the pvc required
 
 # Mention the volume mounts for each container in the deployment
-
-spec:    
-  containers:        
-    volumeMounts:          
-      - name: # name of the specific pod volume to be mounted             
-        mountPath: # location on the container to be mounted (defaults to /data/db for mongo and /var/lib/postgresql/data for postgres)
+  template:
+    metadata:
+      labels:
+        component: web # arbitrary key value 
+    spec:
+      containers: 
+        volumeMounts:          
+          - name: xyzvol # same as name of the specific pod volume to be mounted             
+            mountPath: <container location> # location on the container to be mounted (defaults to /data/db for mongo and /var/lib/postgresql/data for postgres)
 
 
