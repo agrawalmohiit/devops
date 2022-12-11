@@ -99,10 +99,13 @@ spec:
       containers:
       - name: webapp
         image: richardchesterwood/k8s-fleetman-webapp-angular:release2
-        env:
-        - name: SPRING_PROFILES_ACTIVE
+        # env:
+        # - name: SPRING_PROFILES_ACTIVE
           # value: production-microservice
-          valueFrom:
-            configMapRef:
-              name: global-config-v2
-              key: SPRING_PROFILES_ACTIVE
+          # valueFrom:
+          #   configMapRef:
+          #     name: global-config-v2
+          #     key: SPRING_PROFILES_ACTIVE
+        envFrom:
+        - configMapRef:
+            name: global-config-v2 # picks all the variables
