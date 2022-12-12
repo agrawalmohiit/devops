@@ -4,7 +4,7 @@ metadata:
   name: global-config
   namespace: default
 data:
-  SPRING_PROFILES_ACTIVE: production-microservice
+  SPRING_PROFILES_ACTIVE: production-microservice-dummy
 
 ---
 apiVersion: v1
@@ -13,7 +13,7 @@ metadata:
   name: global-config-v2
   namespace: default
 data:
-  SPRING_PROFILES_ACTIVE: production-microservice-modified
+  SPRING_PROFILES_ACTIVE: production-microservice
 
 ---
 apiVersion: v1
@@ -23,6 +23,7 @@ metadata:
   namespace: default
 data:
   database.properties: |
+    SPRING_PROFILES_ACTIVE=production-microservice
     url=http://someplace.com
     password=P@sSw0rd1
 
