@@ -27,7 +27,11 @@
 - ingresses are native objects inside the cluster that can route to multiple services, while load balancers are external to the cluster and only route to a single service
 - 
 
-
+### Config Maps 
+  # The changes in the CM do not propagate to the deployments automatically
+  # https://github.com/kubernetes/kubernetes/issues/22368
+  # For updating values, best to create a new config map and update the map version in pods
+  # if the version in pods is updated and config map is not applied, they will be constantly polling and automatically update once the CM is applied
 
 
 

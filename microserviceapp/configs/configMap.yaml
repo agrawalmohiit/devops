@@ -14,3 +14,15 @@ metadata:
   namespace: default
 data:
   SPRING_PROFILES_ACTIVE: production-microservice-modified
+
+---
+apiVersion: v1
+kind : ConfigMap
+metadata:
+  name: global-config-v3
+  namespace: default
+data:
+  database.properties: |
+    url=http://someplace.com
+    password=P@sSw0rd1
+

@@ -96,9 +96,16 @@ spec:
       labels:
         app: webapp
     spec:
+      volumes:
+        - name: env-files-vol
+          configMap:
+            name: global-config-v3
       containers:
       - name: webapp
         image: richardchesterwood/k8s-fleetman-webapp-angular:release2
+        volumeMounts:
+        - name: env-files-vol #anyname just match with the template.volumes.name
+          mountPath: /etc/some/directory/env
         # env:
         # - name: SPRING_PROFILES_ACTIVE
           # value: production-microservice
@@ -106,6 +113,6 @@ spec:
           #   configMapRef:
           #     name: global-config-v2
           #     key: SPRING_PROFILES_ACTIVE
-        envFrom:
-        - configMapRef:
-            name: global-config-v2 # picks all the variables
+        # envFrom:
+        # - configMapRef:
+        #     name: global-config-v2 # picks all the variables
