@@ -1,0 +1,58 @@
+## Batch jobs - run a simple process and exit
+
+  # using a pod
+    apiVersion: v1
+    kind: Pod
+    metadata: 
+      name: test-job
+    spec: # Pod
+      containers:
+      - name: long-job
+        image: python
+        command: ["python"]
+        args: ["-c", "import time; print('starting'); time.sleep(30); print('done')"]
+      restartPolicy : OnFailure # Always(default), Never, OnFailure
+
+    # The problem with this is that a batch process like this gets completed (normally webservices do no go to "completed", they stay in "running" status)
+    # kubernetes restarts the pod once the status turns "completed" by default
+    # Batch jobs do not need to be restarted after completion
+    # restartPolicy=OnFailure seems to be fulfilling the need, not sure why we need Jobs
+    # Apparently Job objects make sure the job is completed in case of Node failure
+
+# using a Job object
+  apiVersion: v1
+  kind: Job
+  metadata: 
+    name: test-job
+  spec: # Job
+    template:
+      spec: # Pod
+        containers:
+        - name: long-job
+          image: python
+          command: ["python"]
+          args: ["-c", "import time; print('starting'); time.sleep(30); print('done')"]
+        #restartPolicy : OnFailure # Always(default), Never, OnFailure
+    backOffLimit: 2   # how many times kubernetes should restart on failure
+
+
+# Cron Jobs
+
+apiVersion: batch/v1
+kind: CronJob
+metadata: 
+  name: test-job
+spec: # CronJob
+  schedule: "* * * * *" # "min hour day month dayofweek" - defaults to "1 * * * *" 
+  jobTemplate:
+    name:
+    spec: # Job
+      template:
+        spec: # Pod
+          containers:
+          - name: long-job
+            image: python
+            command: ["python"]
+            args: ["-c", "import time; print('starting'); time.sleep(30); print('done')"]
+          restartPolicy : Never # Always(default), Never, OnFailure
+      backoffLimit: 2   # how many times kubernetes should restart on failure

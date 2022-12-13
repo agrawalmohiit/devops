@@ -1,3 +1,5 @@
 Why is a container name inside a deployment given without writing metadata and with a -  (isn’t - used for a list ? ) 
 Why do we use selector.matchLabels in Depolyment but only selector in services ? 
 
+Understanding CrashLoopBackOff and Completed status? 
+Job objects are also not cleaned from the cluster once process completed, so why cant we just use a Pod with restartPolicy=OnFailure ? 
