@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: queue
-        image: richardchesterwood/k8s-fleetman-queue:release2
+        image: richardchesterwood/k8s-fleetman-queue:release2-multi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -33,7 +33,7 @@ spec:
     spec:
       containers:
       - name: position-simulator
-        image: richardchesterwood/k8s-fleetman-position-simulator:release2
+        image: richardchesterwood/k8s-fleetman-position-simulator:release2-multi
         env:
         - name: SPRING_PROFILES_ACTIVE
           value: production-microservice
@@ -76,7 +76,7 @@ spec:
     spec:
       containers:
       - name: api-gateway
-        image: richardchesterwood/k8s-fleetman-api-gateway:release2
+        image: richardchesterwood/k8s-fleetman-api-gateway:release2-multi
         env:
         - name: SPRING_PROFILES_ACTIVE
           value: production-microservice
@@ -102,7 +102,7 @@ spec:
             name: global-config-v3
       containers:
       - name: webapp
-        image: richardchesterwood/k8s-fleetman-webapp-angular:release2  
+        image: richardchesterwood/k8s-fleetman-webapp-angular:release2-multi  
 
         # default method
         # env: 
@@ -125,6 +125,6 @@ spec:
         volumeMounts:
         - name: env-files-vol #anyname just match with the template.volumes.name
           mountPath: /etc/some/directory/env
-          
+
         
         

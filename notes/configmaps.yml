@@ -1,0 +1,82 @@
+apiVersion: v1
+kind : ConfigMap
+metadata:
+  name: global-config-v1 # reading vars individually
+  namespace: default
+data:
+  SPRING_PROFILES_ACTIVE: production-microservice
+
+---
+apiVersion: v1
+kind : ConfigMap
+metadata:
+  name: global-config-v2 # reading the whole yaml
+  namespace: default
+data:
+  SPRING_PROFILES_ACTIVE: production-microservice-modified
+
+---
+apiVersion: v1
+kind : ConfigMap
+metadata:
+  name: global-config-v3 # mouting to a volume
+  namespace: default
+data:
+  database.properties: |
+    SPRING_PROFILES_ACTIVE= production-microservice
+    url=http://someplace.com
+    password=P@sSw0rd1
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp
+spec:
+  selector:
+    matchLabels:
+      app: webapp
+  replicas: 1
+  template: # template for the pods
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      volumes: 
+        - name: env-files-vol
+          configMap: # pull data from the configmap to mount on the container FS
+            name: global-config-v3
+      containers:
+      - name: webapp
+        image: richardchesterwood/k8s-fleetman-webapp-angular:release2-multi  
+
+        # default method
+        # env: 
+        # - name: SPRING_PROFILES_ACTIVE
+        #   value: production-microservice
+        
+        # get each variable individually
+        # env:         
+        #   valueFrom: 
+        #     configMapKeyRef: 
+        #       name: global-config-v2
+        #       key: SPRING_PROFILES_ACTIVE
+        
+        # picks all the variables
+        envFrom:
+        - configMapRef:
+            name: global-config-v2 
+
+        # mounts configs to a volume but does not read from it 
+        volumeMounts:
+        - name: env-files-vol #anyname just match with the template.volumes.name
+          mountPath: /etc/some/directory/env
+        
+
+### Config Maps 
+  # The changes in the CM do not propagate to the deployments automatically
+  # https://github.com/kubernetes/kubernetes/issues/22368
+  # For updating values, best to create a new config map and update the map version in pods
+  # if the version in pods is updated and config map is not applied, they will be constantly polling and automatically update once the CM is applied
+
