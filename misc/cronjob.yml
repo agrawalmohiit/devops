@@ -1,0 +1,18 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata: 
+  name: cron-job
+spec: # CronJob
+  schedule: "* * * * *" # "min hour day month dayofweek" - defaults to "1 * * * *" 
+  jobTemplate:
+    name:
+    spec: # Job
+      template:
+        spec: # Pod
+          containers:
+          - name: long-job
+            image: python
+            command: ["python"]
+            args: ["-c", "import time; print('starting'); time.sleep(30); print('done')"]
+          restartPolicy : Never # Always(default), Never, OnFailure
+      backoffLimit: 2   # how many times kubernetes should restart on failure

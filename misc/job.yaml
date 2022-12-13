@@ -10,6 +10,7 @@
 #     args: ["-c", "import time; print('starting'); time.sleep(60); print('done')"]
 #   restartPolicy : OnFailure # Always(default), Never, OnFailure
 
+---
 
 apiVersion: batch/v1
 kind: Job
@@ -25,3 +26,5 @@ spec: # Job
         args: ["-c", "import time; print('starting'); time.sleep(30); print('done')"]
       restartPolicy : Never # Always(default), Never, OnFailure
   backoffLimit: 2   # how many times kubernetes should restart on failure
+
+  
