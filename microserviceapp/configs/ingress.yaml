@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: default-http-backend
+spec:
+  defaultBackend:
+    service:
+      name: fleetman-webapp
+      port:
+        number: 80
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: basic-routing
+spec:
+  rules:
+  - host: devops.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: fleetman-webapp
+            port:
+              number: 80

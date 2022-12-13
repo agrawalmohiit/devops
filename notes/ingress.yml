@@ -1,0 +1,35 @@
+# installation
+  https://kubernetes.github.io/ingress-nginx/deploy/#quick-start
+  ## docker desktop
+  kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.5.1/deploy/static/provider/cloud/deploy.yaml
+
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: minimal-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx-example
+  rules:
+  - host: # routing for host 1 
+    http:
+  - host: # routing for host 2
+    http:
+    https:
+  - host: # routing for host 3
+    https:
+
+  - http: # default - for all ltraffic not coming from any defined host
+      paths:
+      - path: /testpath
+        pathType: Prefix
+        backend:
+          service:
+            name: test
+            port:
+              number: 80 # same as ports.port in the service
+              
+
+
