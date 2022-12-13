@@ -49,7 +49,7 @@ spec:
             name: global-config-v3
       containers:
       - name: webapp
-        image: richardchesterwood/k8s-fleetman-webapp-angular:release2-multi  
+        image: 
 
         # default method
         # env: 
